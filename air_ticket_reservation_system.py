@@ -107,14 +107,15 @@ def cust_logged():
         if existing_cust:
             cursor.close()
             session['email'] = email
-            return redirect('/home')            
+            return redirect(url_for('cust_home'))            
         else:
             error = 'Invalid login. Please register or try again'
             return render_template('customer_login.html', error = error)
 
-@app.route('/home', methods = ["GET", "POST"])
+@app.route('/cust_home', methods = ["GET", "POST"])
 def cust_home():
-    return render_template('home.html')
+    return render_template('customer_home.html')
+
 app.secret_key = 'I am secret'
 if __name__ == '__main__':
     app.run('127.0.0.1', 5000, debug = True)

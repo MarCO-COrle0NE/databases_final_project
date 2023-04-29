@@ -1,0 +1,202 @@
+<html>
+<head>
+    <title>Welcome</title>
+</head>
+<body>
+    <style type="text/css">
+        h1, body{
+            font-family: Verdana;
+            font-style:  normal;
+        }
+        table{
+            border: 1px solid lightsteelblue;
+            font-family: Verdana;
+        }
+        th, td{
+            border: 1px solid lightsteelblue;
+            padding:  15px; 
+            text-align: left;
+        }
+        tr:not(:first-child):hover{
+            background-color: lightsteelblue;
+        }
+
+    </style>
+    <h1>Welcome!</h1>
+    <a href="/">Logout</a>
+    {% if error %}
+    <p class="error"><strong>Error:</strong> {{error}}</p>
+    {% endif %}
+    <h2>Search through your flights</h2>
+     <form action = "/airline_view_flights" method = "POST">
+        Enter a range of departure dates:
+        <br>
+        <input type = "date" name = "first_departure_date" placeholder = "starting departure date"/>
+        <input type = "date" name = "second_departure_date" placeholder = "ending departure date"/><br>
+        <input type = "text" name = "departure_city" placeholder = "departure city" pattern = "{1,20}"/>
+        <input type = "text" name = "arrival_city" placeholder = "arrival city" pattern = "{1,20}"/></br> 
+        <input type = "text" name = "departure_airport" placeholder = "departure airport" pattern = "{1,20}"/>
+        <input type = "text" name = "arrival_airport" placeholder = "arrival airport" pattern = "{1,20}"/></br>
+        <input type = "hidden" name = "action" value = "search_flights"/>
+        <input type = "submit" value = "Search" /></br>
+    </form>
+
+
+    <h2>Register a Plane</h2>
+    <form action = "/airline_logged_in" method = "POST">
+        <input type = "airplane_id" name = "airplane_id" placeholder = "Airplane ID" required/>
+        <input type = "num_seats" name = "num_seats" placeholder = "Number of Seats on Airplane" required/>
+        <input type = "hidden" name = "action" value = "plane_registration"/>
+        <input type = "submit" value = "Register Plane"/>
+    </form>
+
+    <h2>Create a New Flight</h2>
+    <form action = "/airline_logged_in" method = "POST">
+        <input type = "flight_num" name = "flight_num" placeholder = "Flight Number" required/>
+        <input type = "date" name = "departure_date" placeholder = "Departure Date" required/>
+        <input type = "departure_time" name = "departure_time" placeholder = "Departure Time (HH:MM)" required/>
+        <input type = "base_price" name = "base_price" placeholder = "Base Ticket Price" required/>
+        <input type = "departure_airport" name = "departure_airport" placeholder = "Departure Airport" required/>
+        <input type = "arrival_airport" name = "arrival_airport" placeholder = "Arrival Airport" required/>
+        <input type = "date" name = "arrival_date" placeholder = "Arrival Date" required/>
+        <input type = "arrival_time" name = "arrival_time" placeholder = "Arrival Time (HH:MM)" required/>
+        <input type = "airplane_id" name = "airplane_id" placeholder = "Airplane ID" required/>
+        <input type = "hidden" name = "action" value = "new_flight"/>
+        <input type = "submit" value = "Create Flight"/>
+    </form>
+
+    <h2>Add an Airport</h2>
+    <form action = "/airline_logged_in" method = "POST">
+        <input type = "airport_code" name =  "code" placeholder = "Airport Code (3 characters)" required/>
+        <input type = "name" name = "name" placeholder = "Airport Name" required/>
+        <input type = "city" name = "city" placeholder = "Airport City" required/>
+        <input type = "hidden" name = "action" value = "new_airport"/>
+        <input type = "submit" value = "Add Airport"/>
+    </form>
+
+    <h2>Update Flight Status</h2>
+    <form action = "/airline_logged_in" method = "POST">
+        <input type = "flight_num" name = "flight_num" placeholder = "Flight Number" required/>
+        <input type = "date" name = "dep_date" placeholder = "departure date" required/>
+        <input type = "dep_time" name = "dep_time" placeholder = "Departure Time (HH:MM)" required/>
+        <input type = "status" name = "status" placeholder = "New Status" required/>
+        <input type = "hidden" name = "action" value = "update_status"/>
+        <input type = "submit" value = "Update Flight Status"/>
+    </form>
+
+    <h2>View Ratings</h2>
+    To see average rating for all flights, leave the fields empty. To see comments and ratings from each customer, enter flight details below.
+    <form action = "/airline_logged_in" method = "POST">
+        <input type = "flight_num" name = "flight_num" placeholder = "Flight Number" value = "See all flights"/>
+        <input type = "date" name = "dep_date" placeholder = "departure date"/>
+        <input type = "dep_time" name = "dep_time" placeholder = "Departure Time (HH:MM)"/>
+        <input type = "hidden" name = "action" value = "see_ratings"/>
+        <input type = "submit" value = "View Ratings"/>
+    </form>
+
+    <h3>Flight Ratings: </h3>
+    <table>
+        <td>Email</td>
+        <th>Flight no.</th>
+        <th>Departure Date</th>
+        <th>Departure Time</th>
+        <th>Rating</th>
+        <th>Comments</th>
+
+
+    {% for line in data %}
+        <tr>
+            <td>{{line['email']}}</td>
+            <td>{{line['flight_num']}}</td>
+            <td>{{line['departure_date']}}</td>
+            <td>{{line['departure_time']}}</td>
+            <td>{{line['rate']}}</td>
+            <td>{{line['comment']}}</td>
+        </tr>
+    {% endfor %}
+    </table><br>
+
+    <h2>Your Airline Stats</h2>
+    <h3>Top Destinations!</h3>
+    <form action = "/airline_logged_in" method = "POST">
+        <input type = "hidden" name = "action" value = "see_opposite"/>
+        <input type = "submit" value = "See Annual or 3 Month"/>
+    </form>
+    <table>
+        <td>Airport Code</td>
+        <th>Tickets Sold</th>
+
+
+    {% for line in data2 %}
+        <tr>
+            <td>{{line['airport_code']}}</td>
+            <td>{{line['tickets_sold']}}</td>
+        </tr>
+    {% endfor %}
+    </table><br>
+    <h3>10 Most Frequent Customers</h3>
+    <form action = "/airline_logged_in" method = "POST">
+        <input type = "hidden" name = "action" value = "see_top_cust"/>
+        <input type = "submit" value = "Update"/>
+    </form>
+    <table>
+        <td>Customer Email</td>
+        <th>Number of Flights</th>
+
+
+    {% for line in data3 %}
+        <tr>
+            <td>{{line['email']}}</td>
+            <td>{{line['flights_taken']}}</td>
+        </tr>
+    {% endfor %}
+    </table><br>
+    <form action = "/airline_logged_in" method = "POST">
+        <input type = "cust_email" name = "cust_email" placeholder = "Customer Email" required/>
+        <input type = "hidden" name = "action" value = "cust_flights"/>
+        <input type = "submit" value = "Find Customer Flights"/>
+    </form>
+    {% if data4 %}
+        <h4>Flights Taken By Customer</h4>
+        <table>
+            <td>Customer Email</td>
+            <td>Flight Number</td>
+            <td>Departure Date</td>
+            <td>Departure Time</td>
+        {% for line in data4 %}
+            <tr>
+                <td>{{line['email']}}</td>
+                <td>{{line['flight_num']}}</td>
+                <td>{{line['dep_date']}}</td>
+                <td>{{line['dep_time']}}</td>
+            </tr>
+        {% endfor %}
+        </table><br>
+    {% endif %}
+    <h3>Tickets Sold</h3>
+    <!--Picture Here -->
+    <img src="{{ graph_image }}"><br>
+    Your graph range (default past year): <br>
+        <form action="/airline_logged_in" method="POST">
+            <input type="date" name="start_date" placeholder="start date"/>
+            <input type="date" name="end_date" placeholder="end date"/>
+            <input type = "hidden" name = "action" value = "update_air_graph"/>
+            <input type = "submit" value = "Update"/><br>
+        </form>
+
+    <h3>Total Revenue Earned </h3>
+        <form action="/airline_logged_in" method="POST">
+                <input type = "hidden" name = "action" value = "update_revenue"/>
+                <input type = "submit" value = "Update"/><br>
+        </form>
+        <table>
+            <td>Total Revenue</td>
+            {% for line in data5 %} 
+            <tr>
+                <td>{{line['Revenue']}}</td>
+            </tr>
+            {% endfor %}
+        </table><br>
+
+</body>
+</html>
